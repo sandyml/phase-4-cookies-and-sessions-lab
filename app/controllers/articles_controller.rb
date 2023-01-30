@@ -6,9 +6,29 @@ class ArticlesController < ApplicationController
     render json: articles, each_serializer: ArticleListSerializer
   end
 
+  # def show
+  #   article = Article.find(params[:id])
+
+  #   # session[:pageviews_remaining] ||=3
+  #   # session[:pageviews_remaining] -= 1
+  #   session[:pageviews_remaining] ||= 3
+  #   if session[:pageviews_remaining] > 0 
+  #     session[:pageviews_remaining] -= 1
+  #     render json: article
+  #   else
+  #     render json: {error: "Maximum pageview limit reached" } , status: :unauthorized
+  #   end
+  # end
+
   def show
-    article = Article.find(params[:id])
-    render json: article
+    session[:pageviews_remaining] ||= 3
+    session[:pageviews_remaining] -=1
+    if session[:pageviews_remaining] > 0
+      article = Article.find(params[:id])
+      render json: article
+    else
+      render json: { error: "Maximum pageview limit reached" }, status: :unauthorized
+    end
   end
 
   private

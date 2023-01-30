@@ -28,16 +28,15 @@ RSpec.describe "Articles", type: :request do
         })
       end
 
-      it 'uses the session to keep track of the number of page views' do
+      it 'sets the session to two pageviews remaining' do
         get "/articles/#{Article.first.id}"
   
-        expect(session[:page_views]).to eq(1)
+        expect(session[:pageviews_remaining]).to eq(2)
       end
     end
 
-    context 'with three pageviews' do
+    context 'with two pageviews' do
       it 'returns the correct article' do
-        get "/articles/#{Article.first.id}"
         get "/articles/#{Article.first.id}"
         get "/articles/#{Article.first.id}"
 
@@ -46,18 +45,16 @@ RSpec.describe "Articles", type: :request do
         })
       end
 
-      it 'uses the session to keep track of the number of page views' do
-        get "/articles/#{Article.first.id}"
+      it 'sets the session to one pageview remaining' do
         get "/articles/#{Article.first.id}"
         get "/articles/#{Article.first.id}"
   
-        expect(session[:page_views]).to eq(3)
+        expect(session[:pageviews_remaining]).to eq(1)
       end
     end
 
-    context 'with more than three pageviews' do
+    context 'with three pageviews' do
       it 'returns an error message' do
-        get "/articles/#{Article.first.id}"
         get "/articles/#{Article.first.id}"
         get "/articles/#{Article.first.id}"
         get "/articles/#{Article.first.id}"
@@ -71,18 +68,16 @@ RSpec.describe "Articles", type: :request do
         get "/articles/#{Article.first.id}"
         get "/articles/#{Article.first.id}"
         get "/articles/#{Article.first.id}"
-        get "/articles/#{Article.first.id}"
 
         expect(response).to have_http_status(:unauthorized)
       end
 
-      it 'uses the session to keep track of the number of page views' do
-        get "/articles/#{Article.first.id}"
+      it 'sets the session to no pageviews remaining' do
         get "/articles/#{Article.first.id}"
         get "/articles/#{Article.first.id}"
         get "/articles/#{Article.first.id}"
   
-        expect(session[:page_views]).to eq(4)
+        expect(session[:pageviews_remaining]).to eq(0)
       end
     end
   end
